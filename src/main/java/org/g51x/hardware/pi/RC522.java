@@ -14,7 +14,7 @@ public interface RC522 {
     int PICC_REQIDL = 0x26;
     int PICC_REQALL = 0x52;
     int PICC_ANTICOLL = 0x93;
-    int PICC_SElECT_TAG = 0x93;
+    int PICC_SELECT_TAG = 0x93;
     int PICC_AUTHENT_1A = 0x60;
     int PICC_AUTHENT_1B = 0x61;
     int PICC_READ = 0x30;

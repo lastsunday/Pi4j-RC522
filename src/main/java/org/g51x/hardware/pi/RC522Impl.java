@@ -258,7 +258,7 @@ public class RC522Impl implements RC522 {
         int backBits[] = new int[1];
         int backLen[] = new int[1];
         int i, j;
-        data[0] = (byte) PICC_SElECT_TAG;
+        data[0] = (byte) PICC_SELECT_TAG;
         data[1] = 0x70;
         for (i = 0, j = 2; i < 5; i++, j++) {
             data[j] = uid[i];
