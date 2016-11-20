@@ -64,12 +64,8 @@ public class RC522Impl implements RC522 {
         byte data[] = new byte[2];
         data[0] = (byte) (((address << 1) & 0x7E) | 0x80);
         data[1] = 0;
-        int result = Spi.wiringPiSPIDataRW(SPI_CHANNEL_0, data);
-        if (result == -1) {
-            throw new ErrorMessageException("Device read  error,address=" + address);
-        } else {
-            return data[1];
-        }
+        Spi.wiringPiSPIDataRW(SPI_CHANNEL_0, data);
+        return data[1];
     }
 
     //Reads data from block. You should be authenticated before calling read.
@@ -98,7 +94,7 @@ public class RC522Impl implements RC522 {
     }
 
     private void clearBitmask(byte address, byte mask) {
-        write(address, (byte) (read(address) | (~mask)));
+        write(address, (byte) (read(address) & (~mask)));
     }
 
     @Override
@@ -175,7 +171,7 @@ public class RC522Impl implements RC522 {
                     }
                 }
             } else {
-                throw new ErrorMessageException();
+                throw new ErrorMessageException("MI_ERR");
             }
         }
     }
@@ -234,7 +230,7 @@ public class RC522Impl implements RC522 {
         calculateCRC(buff);
         write((byte) PCD_TRANSCEIVE, buff, buff.length, backData, backBits, backLen);
         if (backBits[0] != 4 || (backData[0] & 0x0F) != 0x0A) {
-            throw new ErrorMessageException();
+            throw new ErrorMessageException("MI_ERR");
         }
         for (int i = 0; i < data.length; i++) {
             buffWrite[i] = data[i];
@@ -242,7 +238,7 @@ public class RC522Impl implements RC522 {
         calculateCRC(buffWrite);
         write((byte) PCD_TRANSCEIVE, buffWrite, buffWrite.length, backData, backBits, backLen);
         if (backBits[0] != 4 || (backData[0] & 0x0F) != 0x0A) {
-            throw new ErrorMessageException();
+            throw new ErrorMessageException("Error while writing");
         }
     }
 
@@ -252,6 +248,7 @@ public class RC522Impl implements RC522 {
 
     //uid-5字节数组,存放序列号
     //返值是大小
+    @Override
     public int selectTag(byte[] uid) {
         byte data[] = new byte[9];
         byte backData[] = new byte[MAX_LEN];

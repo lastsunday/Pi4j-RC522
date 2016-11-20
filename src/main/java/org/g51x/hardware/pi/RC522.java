@@ -107,4 +107,38 @@ public interface RC522 {
 
     byte[] anticoll();
 
+    int selectTag(byte[] uid);
+
+    //Authenticates to use specified block address. Tag must be selected using select_tag(uid) before auth.
+    //auth_mode-RFID.auth_a or RFID.auth_b
+    //block_address- used to authenticate
+    //key-list or tuple(数组) with six bytes key
+    //uid-list or tuple with four bytes tag ID
+    void auth(byte authMode, byte blockAddress, byte[] key, byte[] uid);
+
+    void auth(byte auth_mode, byte sector, byte block, byte[] key, byte[] uid);
+
+    //导出1K字节,64个扇区
+    byte[] dumpClassic1K(byte[] key, byte[] uid);
+
+    //Reads data from block. You should be authenticated before calling read.
+    //Returns tuple of (result state, read data).
+    //block_address
+    //back_data-data to be read,16 bytes
+    void read(byte blockAddress, byte[] backData);
+
+    void read(byte sector, byte block, byte[] backData);
+
+    //uid-5 bytes
+    void selectMirareOne(byte[] uid);
+
+    //Ends operations with Crypto1 usage.
+    void stopCrypto();
+
+    //Writes data to block. You should be authenticated before calling write.
+    //Returns error state.
+    //data-16 bytes
+    void write(byte blockAddress, byte[] data);
+
+    void write(byte sector, byte block, byte[] data);
 }
